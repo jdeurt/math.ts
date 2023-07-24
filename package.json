@@ -3,13 +3,12 @@
     "name": "math.ts",
     "repository": "jdeurt/math.ts",
     "description": "Utility types for numbers.",
-    "main": "dist/index.js",
-    "types": "types/index.d.ts",
+    "main": "src/index.ts",
     "license": "MIT",
     "author": {
         "name": "Juan de Urtubey",
         "email": "jdeurt@gmail.com",
-        "url": "https://jdeurt.xyz"
+        "url": "https://sharky.foo"
     },
     "files": [
         "dist",
@@ -17,15 +16,12 @@
     ],
     "exports": {
         ".": {
-            "import": "./dist/index.js",
-            "require": "./dist/index.js",
-            "types": "./types/index.d.ts"
+            "import": "./src/index.ts",
+            "require": "./src/index.ts"
         },
         "./package.json": "./package.json"
     },
     "scripts": {
-        "build": "tsc --noEmit",
-        "prepublishOnly": "npm run build",
         "test": "c8 ava",
         "publish:patch": "npm version patch && git push origin main --tags && npm publish",
         "publish:minor": "npm version minor && git push origin main --tags && npm publish",
@@ -40,9 +36,9 @@
         ]
     },
     "keywords": [
-        "TODO",
-        "module",
-        "keywords"
+        "typescript",
+        "math",
+        "utility"
     ],
     "devDependencies": {
         "@jdeurt/eslint-config": "^3.2.0",
