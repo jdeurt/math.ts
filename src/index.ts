@@ -67,18 +67,33 @@ export type Gte<A extends number, B extends number> = Or<Eq<A, B> | Gt<A, B>>;
 
 export type Lte<A extends number, B extends number> = Or<Eq<A, B> | Lt<A, B>>;
 
-// TODO
+type Range<A extends number, B extends number> = A extends B
+    ? [A]
+    : [A, ...Range<Add<A, 1>, B>];
+
 export type Parse<Expr extends string> = NormalizeString<Expr> extends infer N
-    ? N extends `${infer A}+${infer B}` // A * B
-        ? Add<Parse<A>, Parse<B>>
-        : N extends `${infer A}-${infer B}` // A + B
-        ? Sub<Parse<A>, Parse<B>>
-        : N extends `${infer A}*${infer B}` // A - B
-        ? Mul<Parse<A>, Parse<B>>
-        : N extends `-${infer A}` // -A
-        ? Invert<Parse<A>>
+    ? N extends `${infer A}..${infer B}` // A..B
+        ? Range<Parse<A>, Parse<B>>
         : N extends `(${infer A})` // (A)
         ? Parse<A>
+        : N extends `${infer A}==${infer B}` // A == B
+        ? Eq<Parse<A>, Parse<B>>
+        : N extends `${infer A}>${infer B}` // A > B
+        ? Gt<Parse<A>, Parse<B>>
+        : N extends `${infer A}<${infer B}` // A < B
+        ? Lt<Parse<A>, Parse<B>>
+        : N extends `${infer A}>=${infer B}` // A >= B
+        ? Gte<Parse<A>, Parse<B>>
+        : N extends `${infer A}<=${infer B}` // A <= B
+        ? Lte<Parse<A>, Parse<B>>
+        : N extends `-${infer A}` // -A
+        ? Invert<Parse<A>>
+        : N extends `${infer A}*${infer B}` // A * B
+        ? Mul<Parse<A>, Parse<B>>
+        : N extends `${infer A}-${infer B}` // A - B
+        ? Sub<Parse<A>, Parse<B>>
+        : N extends `${infer A}+${infer B}` // A + B
+        ? Add<Parse<A>, Parse<B>>
         : N extends `${infer A}` // A
         ? ToNumber<A>
         : never
