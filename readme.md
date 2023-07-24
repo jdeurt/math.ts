@@ -1,11 +1,17 @@
 # math.ts
 
-A type-level arithmetic expression parser written in Typescript.
+Utility types for numbers.
 
 ```ts
-import { Parse } from "math.ts";
+import { Parse } from "@jdeurt/math.ts";
 
 type Result = Parse<"1 + 2 * 3 - 4">; // -3
+
+type Range<A extends number, B extends number> = A extends B
+    ? [A]
+    : [A, ...Range<Add<A, 1>, B>];
+
+type SomeRange = Range<1, 5>; // [1, 2, 3, 4, 5]
 ```
 
 ## License

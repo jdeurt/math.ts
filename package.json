@@ -1,6 +1,6 @@
 {
     "version": "0.0.1",
-    "name": "math.ts",
+    "name": "@jdeurt/math.ts",
     "repository": "jdeurt/math.ts",
     "description": "Utility types for numbers.",
     "main": "src/index.ts",
@@ -11,8 +11,7 @@
         "url": "https://sharky.foo"
     },
     "files": [
-        "dist",
-        "types"
+        "src"
     ],
     "exports": {
         ".": {
@@ -20,6 +19,9 @@
             "require": "./src/index.ts"
         },
         "./package.json": "./package.json"
+    },
+    "publishConfig": {
+        "access": "public"
     },
     "scripts": {
         "test": "c8 ava",
