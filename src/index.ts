@@ -55,7 +55,9 @@ export type Gt<A extends number, B extends number> = [
     SerializedNumber<infer SB, infer DB>
 ]
     ? SA extends SB
-        ? CompareDigits<DA, DB>
+        ? CompareDigits<DA, DB> extends 1
+            ? 1
+            : 0
         : SA extends Sign.POSITIVE
         ? 1
         : -1
@@ -74,8 +76,6 @@ type Range<A extends number, B extends number> = A extends B
 export type Parse<Expr extends string> = NormalizeString<Expr> extends infer N
     ? N extends `${infer A}..${infer B}` // A..B
         ? Range<Parse<A>, Parse<B>>
-        : N extends `(${infer A})` // (A)
-        ? Parse<A>
         : N extends `${infer A}==${infer B}` // A == B
         ? Eq<Parse<A>, Parse<B>>
         : N extends `${infer A}>${infer B}` // A > B
@@ -86,15 +86,17 @@ export type Parse<Expr extends string> = NormalizeString<Expr> extends infer N
         ? Gte<Parse<A>, Parse<B>>
         : N extends `${infer A}<=${infer B}` // A <= B
         ? Lte<Parse<A>, Parse<B>>
-        : N extends `-${infer A}` // -A
-        ? Invert<Parse<A>>
-        : N extends `${infer A}*${infer B}` // A * B
-        ? Mul<Parse<A>, Parse<B>>
-        : N extends `${infer A}-${infer B}` // A - B
-        ? Sub<Parse<A>, Parse<B>>
         : N extends `${infer A}+${infer B}` // A + B
         ? Add<Parse<A>, Parse<B>>
+        : N extends `${infer A}-${infer B}` // A - B
+        ? Sub<Parse<A>, Parse<B>>
+        : N extends `${infer A}*${infer B}` // A * B
+        ? Mul<Parse<A>, Parse<B>>
+        : N extends `~${infer A}` // -A
+        ? Invert<Parse<A>>
         : N extends `${infer A}` // A
         ? ToNumber<A>
         : never
     : never;
+
+export type E<Expr extends string> = Parse<Expr>;
