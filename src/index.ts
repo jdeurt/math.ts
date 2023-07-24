@@ -1,6 +1,7 @@
 import type { Deserialize } from "./helpers/deserialize";
 import type { Invert } from "./helpers/invert";
 import type { NormalizeString } from "./helpers/normalize";
+import type { Or } from "./helpers/or";
 import type { Serialize, SerializedNumber } from "./helpers/serialize";
 import type { ToNumber } from "./helpers/to-number";
 import type { AddDigits } from "./operations/add";
@@ -43,6 +44,28 @@ export type Mul<A extends number, B extends number> = [
         ? Deserialize<MulDigits<DA, DB>>
         : Deserialize<MulDigits<DA, DB>, Sign.NEGATIVE>
     : never;
+
+export type Eq<A extends number, B extends number> = A extends B ? 1 : 0;
+
+export type Gt<A extends number, B extends number> = [
+    Serialize<A>,
+    Serialize<B>
+] extends [
+    SerializedNumber<infer SA, infer DA>,
+    SerializedNumber<infer SB, infer DB>
+]
+    ? SA extends SB
+        ? CompareDigits<DA, DB>
+        : SA extends Sign.POSITIVE
+        ? 1
+        : -1
+    : never;
+
+export type Lt<A extends number, B extends number> = Gt<B, A>;
+
+export type Gte<A extends number, B extends number> = Or<Eq<A, B> | Gt<A, B>>;
+
+export type Lte<A extends number, B extends number> = Or<Eq<A, B> | Lt<A, B>>;
 
 // TODO
 export type Parse<Expr extends string> = NormalizeString<Expr> extends infer N
