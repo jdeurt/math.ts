@@ -44,15 +44,18 @@ export type Mul<A extends number, B extends number> = [
         : Deserialize<MulDigits<DA, DB>, Sign.NEGATIVE>
     : never;
 
+// TODO
 export type Parse<Expr extends string> = NormalizeString<Expr> extends infer N
-    ? N extends `${infer A}*${infer B}` // A * B
-        ? Mul<Parse<A>, Parse<B>>
-        : N extends `${infer A}+${infer B}` // A + B
+    ? N extends `${infer A}+${infer B}` // A * B
         ? Add<Parse<A>, Parse<B>>
-        : N extends `${infer A}-${infer B}` // A - B
+        : N extends `${infer A}-${infer B}` // A + B
         ? Sub<Parse<A>, Parse<B>>
+        : N extends `${infer A}*${infer B}` // A - B
+        ? Mul<Parse<A>, Parse<B>>
         : N extends `-${infer A}` // -A
         ? Invert<Parse<A>>
+        : N extends `(${infer A})` // (A)
+        ? Parse<A>
         : N extends `${infer A}` // A
         ? ToNumber<A>
         : never

@@ -1,1 +1,1 @@
-export type ToString<N extends number> = `${N}`;
+export type ToString<N extends number | bigint> = `${N}`;
