@@ -94,12 +94,10 @@ export type Gt<A extends number, B extends number> = [
     SerializedNumber<infer SB, infer DB>
 ]
     ? SA extends SB
-        ? CompareDigits<DA, DB> extends 1
-            ? 1
-            : 0
+        ? Eq<CompareDigits<DA, DB>, 1>
         : SA extends Sign.POSITIVE
         ? 1
-        : -1
+        : 0
     : never;
 
 export type Lt<A extends number, B extends number> = Gt<B, A>;
