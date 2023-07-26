@@ -1,5 +1,6 @@
 import type { Digit } from "../primitive/digit";
 import type { CompareMap } from "../constant/compare-map";
+import type { NormalizeDigits } from "../helpers/normalize";
 
 type CompareDigitsEqLen<A extends Digit[], B extends Digit[]> = [A, B] extends [
     [infer AH extends Digit, ...infer AT extends Digit[]],
@@ -10,7 +11,7 @@ type CompareDigitsEqLen<A extends Digit[], B extends Digit[]> = [A, B] extends [
         : CompareMap[AH][BH]
     : 0;
 
-export type CompareDigits<
+type _CompareDigits<
     A extends Digit[],
     B extends Digit[]
 > = A["length"] extends B["length"]
@@ -18,3 +19,8 @@ export type CompareDigits<
     : keyof B extends keyof A
     ? 1
     : -1;
+
+export type CompareDigits<
+    A extends Digit[],
+    B extends Digit[]
+> = _CompareDigits<NormalizeDigits<A>, NormalizeDigits<B>>;

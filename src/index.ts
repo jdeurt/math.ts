@@ -6,6 +6,7 @@ import type { Serialize, SerializedNumber } from "./helpers/serialize";
 import type { ToNumber } from "./helpers/to-number";
 import type { AddDigits } from "./operations/add";
 import type { CompareDigits } from "./operations/comparisons";
+import type { DivDigits } from "./operations/div";
 import type { MulDigits } from "./operations/mul";
 import type { SubDigits } from "./operations/sub";
 import type { Sign } from "./primitive/sign";
@@ -43,6 +44,28 @@ export type Mul<A extends number, B extends number> = [
     ? SA extends SB
         ? Deserialize<MulDigits<DA, DB>>
         : Deserialize<MulDigits<DA, DB>, Sign.NEGATIVE>
+    : never;
+
+export type Div<A extends number, B extends number> = [
+    Serialize<A>,
+    Serialize<B>
+] extends [
+    SerializedNumber<infer SA, infer DA>,
+    SerializedNumber<infer SB, infer DB>
+]
+    ? SA extends SB
+        ? Deserialize<DivDigits<DA, DB>[0]>
+        : Deserialize<DivDigits<DA, DB>[0], Sign.NEGATIVE>
+    : never;
+
+export type Mod<A extends number, B extends number> = [
+    Serialize<A>,
+    Serialize<B>
+] extends [
+    SerializedNumber<infer _, infer DA>,
+    SerializedNumber<infer _, infer DB>
+]
+    ? Deserialize<DivDigits<DA, DB>[1]>
     : never;
 
 export type Eq<A extends number, B extends number> = A extends B ? 1 : 0;
@@ -92,6 +115,10 @@ export type Parse<Expr extends string> = NormalizeString<Expr> extends infer N
         ? Sub<Parse<A>, Parse<B>>
         : N extends `${infer A}*${infer B}` // A * B
         ? Mul<Parse<A>, Parse<B>>
+        : N extends `${infer A}/${infer B}` // A / B
+        ? Div<Parse<A>, Parse<B>>
+        : N extends `${infer A}%${infer B}` // A % B
+        ? Mod<Parse<A>, Parse<B>>
         : N extends `~${infer A}` // -A
         ? Invert<Parse<A>>
         : N extends `${infer A}` // A
@@ -100,3 +127,5 @@ export type Parse<Expr extends string> = NormalizeString<Expr> extends infer N
     : never;
 
 export type E<Expr extends string> = Parse<Expr>;
+
+type Spooky = E<"3 + 4 * 6 / 2 - 1">;

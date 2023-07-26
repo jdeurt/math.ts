@@ -9,7 +9,7 @@ type MulX6<D extends Digit[]> = AddDigits<MulX5<D>, D>;
 type MulX7<D extends Digit[]> = AddDigits<MulX6<D>, D>;
 type MulX8<D extends Digit[]> = AddDigits<MulX7<D>, D>;
 type MulX9<D extends Digit[]> = AddDigits<MulX8<D>, D>;
-type MulX10<D extends Digit[]> = [...D, 0];
+export type MulX10<D extends Digit[]> = [...D, 0];
 
 export type MulXN<A extends Digit[], B extends Digit> = B extends 0
     ? [0]
