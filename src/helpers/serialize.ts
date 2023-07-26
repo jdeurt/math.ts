@@ -11,7 +11,9 @@ export type SerializedNumber<
 };
 
 type _Serialize<N extends number> =
-    ToString<N> extends `${infer H extends Digit}${infer T extends number}`
+    ToString<N> extends `${infer H extends Digit}.${number}`
+        ? [H]
+        : ToString<N> extends `${infer H extends Digit}${infer T extends number}`
         ? [H, ..._Serialize<T>]
         : [Assert<N, Digit>];
 

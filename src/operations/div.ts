@@ -7,7 +7,7 @@ import type { SubDigits } from "./sub";
 /**
  * N / D = [Q, R]
  */
-type DivMod<
+export type DivMod<
     N extends Digit[],
     D extends Digit[],
     Q extends Digit[] = [0]

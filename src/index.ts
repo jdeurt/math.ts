@@ -1,5 +1,6 @@
 import type { Deserialize } from "./helpers/deserialize";
 import type { Invert } from "./helpers/invert";
+import type { IsEven } from "./helpers/is-even";
 import type { NormalizeString } from "./helpers/normalize";
 import type { Or } from "./helpers/or";
 import type { Serialize, SerializedNumber } from "./helpers/serialize";
@@ -8,6 +9,7 @@ import type { AddDigits } from "./operations/add";
 import type { CompareDigits } from "./operations/comparisons";
 import type { DivDigits } from "./operations/div";
 import type { MulDigits } from "./operations/mul";
+import type { PowDigits } from "./operations/pow";
 import type { SubDigits } from "./operations/sub";
 import type { Sign } from "./primitive/sign";
 
@@ -66,6 +68,20 @@ export type Mod<A extends number, B extends number> = [
     SerializedNumber<infer _, infer DB>
 ]
     ? Deserialize<DivDigits<DA, DB>[1]>
+    : never;
+
+export type Pow<A extends number, B extends number> = [
+    Serialize<A>,
+    Serialize<B>
+] extends [
+    SerializedNumber<infer SA, infer DA>,
+    SerializedNumber<infer _, infer DB>
+]
+    ? SA extends Sign.NEGATIVE
+        ? IsEven<DB> extends 1
+            ? Deserialize<PowDigits<DA, DB>>
+            : Deserialize<PowDigits<DA, DB>, Sign.NEGATIVE>
+        : Deserialize<PowDigits<DA, DB>>
     : never;
 
 export type Eq<A extends number, B extends number> = A extends B ? 1 : 0;
