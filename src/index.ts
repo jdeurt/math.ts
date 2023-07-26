@@ -127,5 +127,3 @@ export type Parse<Expr extends string> = NormalizeString<Expr> extends infer N
     : never;
 
 export type E<Expr extends string> = Parse<Expr>;
-
-type Spooky = E<"3 + 4 * 6 / 2 - 1">;
